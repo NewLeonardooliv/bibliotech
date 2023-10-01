@@ -15,7 +15,7 @@ public class EditoraDAO {
     }
 
     public void adicionarEditora(EditoraBean editora) throws SQLException {
-        String sql = "INSERT INTO editora (razaoSocial, status) VALUES (?, ?)";
+        String sql = "INSERT INTO editora (razao_social, status) VALUES (?, ?)";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, editora.getRazaoSocial());
             ps.setBoolean(2, editora.isStatus());
@@ -25,7 +25,7 @@ public class EditoraDAO {
 
     public List<EditoraBean> listarEditoras() throws SQLException {
         List<EditoraBean> editoras = new ArrayList<>();
-        String sql = "SELECT id, razaoSocial, status FROM editora";
+        String sql = "SELECT id, razao_social, status FROM editora";
         try (PreparedStatement ps = connection.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
@@ -40,7 +40,7 @@ public class EditoraDAO {
     }
 
     public void atualizarEditora(EditoraBean editora) throws SQLException {
-        String sql = "UPDATE editora SET razaoSocial = ?, status = ? WHERE id = ?";
+        String sql = "UPDATE editora SET razao_social = ?, status = ? WHERE id = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, editora.getRazaoSocial());
             ps.setBoolean(2, editora.isStatus());
