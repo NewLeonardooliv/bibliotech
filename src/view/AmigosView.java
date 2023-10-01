@@ -6,12 +6,12 @@ import model.Amigos.AmigosBean;
 
 public class AmigosView {
 
-    public void exibirClientes(List<AmigosBean> clientes) {
-        for (AmigosBean cliente : clientes) {
-            System.out.println("ID: " + cliente.getId());
-            System.out.println("Nome: " + cliente.getNome());
-            System.out.println("Documento: " + cliente.getDocumento());
-            System.out.println("Status: " + cliente.getStatus());
+    public void exibirAmigos(List<AmigosBean> amigos) {
+        for (AmigosBean amigo : amigos) {
+            System.out.println("ID: " + amigo.getId());
+            System.out.println("Nome: " + amigo.getNome());
+            System.out.println("Documento: " + amigo.getDocumento());
+            System.out.println("Status: " + amigo.getStatus());
             System.out.println("----------------------");
         }
     }

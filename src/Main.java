@@ -8,12 +8,12 @@ import model.Amigos.AmigosDAO;
 
 public class Main {
     public static void main(String[] args) {
-        AmigosDAO clienteDAO = new AmigosDAO();
-        AmigosView clienteView = new AmigosView();
-        AmigosController clienteController = new AmigosController(clienteDAO);
+        AmigosDAO amigosDAO = new AmigosDAO();
+        AmigosView amigosView = new AmigosView();
+        AmigosController amigosController = new AmigosController(amigosDAO);
 
-        clienteController.adicionarAmigo("Leonardo", "leonardo@email.com");
-        List<AmigosBean> clientes = clienteController.buscarTodosClientes();
-        clienteView.exibirClientes(clientes);
+        amigosController.adicionarAmigo("Leonardo", "leonardo@email.com");
+        List<AmigosBean> amigos = amigosController.buscarTodosAmigos();
+        amigosView.exibirAmigos(amigos);
     }
 }

@@ -6,21 +6,21 @@ import model.Amigos.AmigosBean;
 import model.Amigos.AmigosDAO;
 
 public class AmigosController {
-    private AmigosDAO clienteDAO;
+    private AmigosDAO amigoDAO;
 
-    public AmigosController(AmigosDAO clienteDAO) {
-        this.clienteDAO = clienteDAO;
+    public AmigosController(AmigosDAO amigoDAO) {
+        this.amigoDAO = amigoDAO;
     }
 
     public void adicionarAmigo(String nome, String email) {
-        AmigosBean cliente = new AmigosBean();
-        cliente.setNome(nome);
-        cliente.setDocumento(email);
-        cliente.setStatus("ATIVO");
-        clienteDAO.adicionarAmigo(cliente);
+        AmigosBean amigo = new AmigosBean();
+        amigo.setNome(nome);
+        amigo.setDocumento(email);
+        amigo.setStatus("ATIVO");
+        amigoDAO.adicionarAmigo(amigo);
     }
 
-    public List<AmigosBean> buscarTodosClientes() {
-        return clienteDAO.listarAmigos();
+    public List<AmigosBean> buscarTodosAmigos() {
+        return amigoDAO.listarAmigos();
     }
 }
