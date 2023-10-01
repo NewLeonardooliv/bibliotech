@@ -1,0 +1,15 @@
+version: '3'
+services:
+  db:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: livro
+      MYSQL_USER: leonardo
+      MYSQL_PASSWORD: 123abc
+      MYSQL_OPTS: "--allow-public-key-retrieval=true"
+    volumes:
+      - ./data:/var/lib/mysql
+    ports:
+      - 3308:3306

@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS `amigos` (
+    `ID` BIGINT(20) NOT NULL AUTO_INCREMENT,
+    `nome` VARCHAR(50) NOT NULL,
+    `documento` VARCHAR(15) NOT NULL,
+    `status` VARCHAR(15) NOT NULL,
+    PRIMARY KEY (`ID`)
+);
