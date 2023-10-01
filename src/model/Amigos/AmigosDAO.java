@@ -10,17 +10,6 @@ public class AmigosDAO {
     private Connection connection;
 
     public AmigosDAO() {
-        // String jdbcUrl = "jdbc:mysql://localhost:3308/livro";
-        // String usuario = "root";
-        // String senha = "root";
-
-        // try {
-        // Class.forName("com.mysql.cj.jdbc.Driver");
-        // this.connection = DriverManager.getConnection(jdbcUrl, usuario, senha);
-        // } catch (Exception e) {
-        // e.printStackTrace();
-        // }
-
         this.connection = Database.connect();
     }
 

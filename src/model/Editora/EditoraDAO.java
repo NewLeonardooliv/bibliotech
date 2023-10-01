@@ -7,11 +7,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import service.Database;
+
 public class EditoraDAO {
     private Connection connection;
 
     public EditoraDAO(Connection connection) {
-        this.connection = connection;
+        this.connection = Database.connect();
     }
 
     public void adicionarEditora(EditoraBean editora) throws SQLException {
