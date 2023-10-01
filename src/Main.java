@@ -12,7 +12,7 @@ public class Main {
         AmigosView amigosView = new AmigosView();
         AmigosController amigosController = new AmigosController(amigosDAO);
 
-        amigosController.adicionarAmigo("Leonardo", "leonardo@email.com");
+        amigosController.adicionarAmigo("Leonardo", "12312312312");
         List<AmigosBean> amigos = amigosController.buscarTodosAmigos();
         amigosView.exibirAmigos(amigos);
     }

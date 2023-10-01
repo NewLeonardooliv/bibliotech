@@ -5,3 +5,10 @@ CREATE TABLE IF NOT EXISTS `amigos` (
     `status` VARCHAR(15) NOT NULL,
     PRIMARY KEY (`ID`)
 );
+
+CREATE TABLE IF NOT EXISTS `editoras` (
+    `ID` BIGINT(20) NOT NULL AUTO_INCREMENT,
+    `razao_social` VARCHAR(50) NOT NULL,
+    `status` VARCHAR(15) NOT NULL,
+    PRIMARY KEY (`ID`)
+);

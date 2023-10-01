@@ -12,10 +12,10 @@ public class AmigosController {
         this.amigoDAO = amigoDAO;
     }
 
-    public void adicionarAmigo(String nome, String email) {
+    public void adicionarAmigo(String nome, String documento) {
         AmigosBean amigo = new AmigosBean();
         amigo.setNome(nome);
-        amigo.setDocumento(email);
+        amigo.setDocumento(documento);
         amigo.setStatus("ATIVO");
         amigoDAO.adicionarAmigo(amigo);
     }
