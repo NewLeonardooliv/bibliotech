@@ -1,19 +1,13 @@
-import view.AmigosView;
+import view.EditoraView;
 
-import java.util.List;
 
-import controller.AmigosController;
-import model.Amigos.AmigosBean;
-import model.Amigos.AmigosDAO;
+import controller.EditoraController;
+import model.Editora.EditoraDAO;
 
 public class Main {
     public static void main(String[] args) {
-        AmigosDAO amigosDAO = new AmigosDAO();
-        AmigosView amigosView = new AmigosView();
-        AmigosController amigosController = new AmigosController(amigosDAO);
-
-        amigosController.adicionarAmigo("Leonardo", "12312312312");
-        List<AmigosBean> amigos = amigosController.buscarTodosAmigos();
-        amigosView.exibirAmigos(amigos);
+        new EditoraView(
+                new EditoraController(
+                        new EditoraDAO()));
     }
 }

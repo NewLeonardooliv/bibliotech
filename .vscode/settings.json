@@ -1,0 +1,5 @@
+{
+    "java.project.referencedLibraries": [
+        "path/to/your/project/folder"
+    ]
+}
