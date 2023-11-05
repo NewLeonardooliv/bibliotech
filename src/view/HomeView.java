@@ -4,6 +4,7 @@ import javax.swing.*;
 
 import controller.EditoraController;
 import model.Editora.EditoraDAO;
+import view.components.Button;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -28,7 +29,7 @@ public class HomeView extends JFrame {
         JLabel welcomeLabel = new JLabel("Bem-vindo ao Sistema de Gerenciamento");
         welcomeLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-        JButton editoraButton = new JButton("Editoras");
+        JButton editoraButton = new Button().get("Editoras");
         editoraButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dispose();
