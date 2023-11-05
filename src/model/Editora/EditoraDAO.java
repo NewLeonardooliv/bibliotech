@@ -43,6 +43,27 @@ public class EditoraDAO {
         return editoras;
     }
 
+    public List<EditoraBean> pesquisarEditoras(String searchTerm) throws SQLException, ValidateException {
+        List<EditoraBean> editoras = new ArrayList<>();
+        String sql = "SELECT id, razao_social, status FROM editoras WHERE razao_social LIKE ? OR id = ?";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, "%" + searchTerm + "%");
+            ps.setString(2, searchTerm);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                EditoraBean editora = new EditoraBean();
+                editora.setId(rs.getInt("id"));
+                editora.setRazaoSocial(rs.getString("razao_social"));
+                editora.setStatus(rs.getBoolean("status"));
+                editoras.add(editora);
+            }
+        }
+
+        return editoras;
+    }
+
     public void atualizarEditora(EditoraBean editora) throws SQLException {
         String sql = "UPDATE editoras SET razao_social = ?, status = ? WHERE id = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {

@@ -1,46 +1,51 @@
 package view;
 
+import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+
 import controller.EditoraController;
 import model.Editora.EditoraBean;
 import shared.ValidateException;
 import view.components.Button;
 
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.sql.SQLException;
 
-public class EditoraView {
-    private JFrame frame;
-    private JPanel panel;
-    private JTable editoraTable;
-    private DefaultTableModel tableModel;
-    private JTextField razaoSocialField;
+public class EditoraView extends JFrame {
     private EditoraController controller;
+    private JTable editoraTable;
+    private JFrame frame;
+    private DefaultTableModel tableModel;
+    private JTextField searchField;
 
     public EditoraView(EditoraController controller) {
         this.controller = controller;
-    }
 
-    public JPanel get() {
-        initialize();
-        refreshTable();
+        setTitle("Editoras");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(600, 400);
+        setLayout(new BorderLayout());
 
-        return panel;
-    }
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int frameX = (screenSize.width - getWidth()) / 2;
+        int frameY = (screenSize.height - getHeight()) / 2;
+        setLocation(frameX, frameY);
 
-    private void initialize() {
         String[] columnNames = { "ID", "Razão Social", "Status" };
         tableModel = new DefaultTableModel(columnNames, 0);
         editoraTable = new JTable(tableModel);
 
-        razaoSocialField = new JTextField(20);
-        razaoSocialField.setFont(new Font("Arial", Font.PLAIN, 14));
+        refreshTable();
 
         JButton addButton = new Button().setBackgroundColor(Button.GREEN).get("Adicionar");
-        addButton.addActionListener(e -> createAction(e));
+        addButton.addActionListener(e -> createAction());
 
         JButton editButton = new Button().setBackgroundColor(Button.BLUE).get("Editar");
         editButton.addActionListener(e -> editAction(e));
@@ -48,55 +53,100 @@ public class EditoraView {
         JButton deleteButton = new Button().setBackgroundColor(Button.RED).get("Inativar");
         deleteButton.addActionListener(e -> deleteAction(e));
 
-        JLabel razaoSocialLabel = new JLabel("Razão Social:");
-        razaoSocialLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        JButton backButton = new Button().setBackgroundColor(Button.CYAN).get("Voltar");
+        backButton.addActionListener(e -> backAction());
 
-        JPanel panel = this.initPanel();
-        panel.add(razaoSocialLabel);
-        panel.add(razaoSocialField);
-        panel.add(addButton);
-        panel.add(editButton);
-        panel.add(deleteButton);
+        searchField = new JTextField(20);
+        searchField.addActionListener(e -> searchAction());
 
-        this.initFrame(panel);
+        searchField.addKeyListener((KeyListener) new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    searchAction();
+                }
+            }
+        });
 
-    }
+        JPanel buttonActions = new JPanel();
+        buttonActions.setLayout(new FlowLayout(FlowLayout.LEFT));
+        buttonActions.add(addButton);
+        buttonActions.add(editButton);
+        buttonActions.add(deleteButton);
 
-    private void initFrame(JPanel panel) {
-        frame = new JFrame("Editoras");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800, 400);
+        JPanel southPanel = new JPanel(new BorderLayout());
 
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        int frameX = (screenSize.width - frame.getWidth()) / 2;
-        int frameY = (screenSize.height - frame.getHeight()) / 2;
-        frame.setLocation(frameX, frameY);
+        JPanel buttonBack = new JPanel();
+        buttonBack.setLayout(new FlowLayout(FlowLayout.RIGHT));
+        buttonBack.add(backButton);
 
-        JScrollPane tableScrollPane = new JScrollPane(editoraTable);
+        southPanel.add(buttonActions, BorderLayout.WEST);
+        southPanel.add(buttonBack, BorderLayout.EAST);
 
-        frame.setLayout(new BorderLayout());
-        frame.add(tableScrollPane, BorderLayout.CENTER);
-        frame.add(panel, BorderLayout.SOUTH);
+        add(new JScrollPane(editoraTable), BorderLayout.CENTER);
+        add(new JLabel("Editoras"), BorderLayout.NORTH);
+        add(southPanel, BorderLayout.SOUTH);
 
-        frame.setVisible(true);
-    }
+        JPanel searchPanel = new JPanel();
+        searchPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        searchPanel.add(new JLabel("Pesquisar:"));
+        searchPanel.add(searchField);
 
-    private JPanel initPanel() {
-        JPanel panel = new JPanel(new FlowLayout());
+        add(searchPanel, BorderLayout.NORTH);
 
-        return panel;
+        setVisible(true);
     }
 
     public void refreshTable() {
+        DefaultTableModel tableModel = (DefaultTableModel) editoraTable.getModel();
         tableModel.setRowCount(0);
+
         try {
             for (EditoraBean editora : controller.listarEditoras()) {
-                tableModel.addRow(new Object[] { editora.getId(), editora.getRazaoSocial(),
-                        editora.isStatus() ? "Ativo" : "Inativo" });
+                String status = editora.isStatus() ? "Ativo" : "Inativo";
+                tableModel.addRow(new Object[] { editora.getId(), editora.getRazaoSocial(), status });
             }
         } catch (SQLException | ValidateException ex) {
             ex.printStackTrace();
         }
+
+        editoraTable.setRowHeight(25);
+        editoraTable.setGridColor(Color.LIGHT_GRAY);
+
+        JTableHeader header = editoraTable.getTableHeader();
+        header.setBackground(Color.DARK_GRAY);
+        header.setForeground(Color.WHITE);
+        header.setFont(new Font("Arial", Font.BOLD, 14));
+
+        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                    boolean hasFocus, int row, int column) {
+                super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+                if (value != null && value.equals("Ativo")) {
+                    setForeground(Color.GREEN);
+                    return this;
+
+                }
+                if (value != null && value.equals("Inativo")) {
+                    setForeground(Color.RED);
+                    return this;
+
+                }
+
+                setForeground(Color.BLACK);
+
+                return this;
+            }
+        };
+
+        editoraTable.getColumnModel().getColumn(2).setCellRenderer(renderer);
+    }
+
+    private void backAction() {
+        dispose();
+        new HomeView().setVisible(true);
     }
 
     private void editAction(ActionEvent e) {
@@ -108,8 +158,8 @@ public class EditoraView {
             JDialog editDialog = new JDialog(frame, "Editar Editora", true);
             editDialog.setLayout(new FlowLayout());
 
-            JTextField razaoSocialEditField = new JTextField(razaoSocial);
-            JButton saveButton = new JButton("Salvar");
+            JTextField razaoSocialEditField = new JTextField(razaoSocial, 20);
+            JButton saveButton = new Button().setBackgroundColor(Button.GREEN).get("Salvar");
 
             saveButton.addActionListener(new ActionListener() {
                 @Override
@@ -126,7 +176,7 @@ public class EditoraView {
                 }
             });
 
-            editDialog.add(new JLabel("Nova Razão Social:"));
+            editDialog.add(new JLabel("Razão Social:"));
             editDialog.add(razaoSocialEditField);
             editDialog.add(saveButton);
 
@@ -148,21 +198,58 @@ public class EditoraView {
             try {
                 controller.apagarEditora(id);
                 refreshTable();
-                razaoSocialField.setText("");
             } catch (SQLException ex) {
             }
         }
     }
 
-    private void createAction(ActionEvent e) {
-        String razaoSocial = razaoSocialField.getText();
+    private void searchAction() {
+        String searchTerm = searchField.getText().trim();
+
+        tableModel.setRowCount(0);
         try {
-            controller.adicionarEditora(razaoSocial);
-            refreshTable();
-            razaoSocialField.setText("");
+            for (EditoraBean editora : controller.pesquisarEditoras(searchTerm)) {
+                tableModel.addRow(new Object[] { editora.getId(), editora.getRazaoSocial(),
+                        editora.isStatus() ? "Ativo" : "Inativo" });
+            }
         } catch (SQLException | ValidateException ex) {
-            JOptionPane.showMessageDialog(frame, "Erro ao criar editora: " + ex.getMessage(), "Erro",
-                    JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
         }
+    }
+
+    private void createAction() {
+        JDialog createDialog = new JDialog(frame, "Criar Editora", true);
+        createDialog.setLayout(new FlowLayout());
+
+        JTextField razaoSocialEditField = new JTextField(20);
+        JButton saveButton = new Button().setBackgroundColor(Button.GREEN).get("Salvar");
+
+        saveButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String razaoSocial = razaoSocialEditField.getText();
+                try {
+                    controller.adicionarEditora(razaoSocial);
+                    refreshTable();
+                    createDialog.dispose();
+                } catch (SQLException | ValidateException ex) {
+                    JOptionPane.showMessageDialog(frame, "Erro ao criar a editora: " + ex.getMessage(), "Erro",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+        createDialog.add(new JLabel("Razão Social:"));
+        createDialog.add(razaoSocialEditField);
+        createDialog.add(saveButton);
+
+        createDialog.setSize(300, 150);
+
+        Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+        int x = (int) ((dimension.getWidth() - createDialog.getWidth()) / 2);
+        int y = (int) ((dimension.getHeight() - createDialog.getHeight()) / 2);
+        createDialog.setLocation(x, y);
+
+        createDialog.setVisible(true);
     }
 }

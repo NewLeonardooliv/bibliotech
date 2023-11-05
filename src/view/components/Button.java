@@ -12,6 +12,7 @@ public class Button {
     public static final Color RED = new Color(255, 71, 71);
     public static final Color YELLOW = new Color(255, 227, 71);
     public static final Color GREEN = new Color(0, 237, 59);
+    public static final Color CYAN = new Color(0, 237, 226);
 
     public JButton get(String buttonName) {
         JButton button = new JButton();
@@ -25,7 +26,6 @@ public class Button {
         button.setBorder(BorderFactory.createCompoundBorder(
                 new LineBorder(Color.GRAY, 1),
                 new EmptyBorder(padding, padding, padding, padding)));
-
 
         return button;
     }
