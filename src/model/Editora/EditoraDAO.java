@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import service.Database;
+import shared.ValidateException;
 
 public class EditoraDAO {
     private Connection connection;
@@ -26,15 +27,15 @@ public class EditoraDAO {
         }
     }
 
-    public List<EditoraBean> listarEditoras() throws SQLException {
+    public List<EditoraBean> listarEditoras() throws SQLException, ValidateException {
         List<EditoraBean> editoras = new ArrayList<>();
         String sql = "SELECT id, razao_social, status FROM editoras";
         try (PreparedStatement ps = connection.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+                ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 EditoraBean editora = new EditoraBean();
                 editora.setId(rs.getInt("id"));
-                editora.setRazaoSocial(rs.getString("razaoSocial"));
+                editora.setRazaoSocial(rs.getString("razao_social"));
                 editora.setStatus(rs.getBoolean("status"));
                 editoras.add(editora);
             }
@@ -43,7 +44,7 @@ public class EditoraDAO {
     }
 
     public void atualizarEditora(EditoraBean editora) throws SQLException {
-        String sql = "UPDATE editora SET razao_social = ?, status = ? WHERE id = ?";
+        String sql = "UPDATE editoras SET razao_social = ?, status = ? WHERE id = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, editora.getRazaoSocial());
             ps.setBoolean(2, editora.isStatus());
@@ -53,11 +54,19 @@ public class EditoraDAO {
     }
 
     public void excluirEditora(int id) throws SQLException {
-        String sql = "DELETE FROM editora WHERE id = ?";
+        String sql = "DELETE FROM editoras WHERE id = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, id);
             ps.executeUpdate();
         }
     }
-}
 
+    public void inativarEditora(int editoraId) throws SQLException {
+        String sql = "UPDATE editoras SET status = ? WHERE id = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setBoolean(1, false);
+            ps.setInt(2, editoraId);
+            ps.executeUpdate();
+        }
+    }
+}

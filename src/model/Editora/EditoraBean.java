@@ -2,6 +2,8 @@ package model.Editora;
 
 import java.io.Serializable;
 
+import shared.ValidateException;
+
 public class EditoraBean implements Serializable {
     private int id;
     private String razaoSocial;
@@ -19,10 +21,14 @@ public class EditoraBean implements Serializable {
     }
 
     public String getRazaoSocial() {
-        return razaoSocial;
+        return this.razaoSocial;
     }
 
-    public void setRazaoSocial(String razaoSocial) {
+    public void setRazaoSocial(String razaoSocial) throws ValidateException {
+        if (razaoSocial.length() < 4) {
+            throw new ValidateException("Razão social muito pequeno");
+        }
+
         this.razaoSocial = razaoSocial;
     }
 
