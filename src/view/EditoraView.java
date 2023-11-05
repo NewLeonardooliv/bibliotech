@@ -14,6 +14,7 @@ import java.sql.SQLException;
 
 public class EditoraView {
     private JFrame frame;
+    private JPanel panel;
     private JTable editoraTable;
     private DefaultTableModel tableModel;
     private JTextField razaoSocialField;
@@ -21,8 +22,13 @@ public class EditoraView {
 
     public EditoraView(EditoraController controller) {
         this.controller = controller;
+    }
+
+    public JPanel get() {
         initialize();
         refreshTable();
+
+        return panel;
     }
 
     private void initialize() {
