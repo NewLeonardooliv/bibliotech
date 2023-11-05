@@ -18,14 +18,14 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.sql.SQLException;
 
-public class EditoraView extends JFrame {
+public class EditorasView extends JFrame {
     private EditoraController controller;
     private JTable editoraTable;
     private JFrame frame;
     private DefaultTableModel tableModel;
     private JTextField searchField;
 
-    public EditoraView(EditoraController controller) {
+    public EditorasView(EditoraController controller) {
         this.controller = controller;
 
         setTitle("Editoras");
