@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS `emprestimos` (
 );
 CREATE TABLE IF NOT EXISTS `livros` (
     `ID` BIGINT(20) NOT NULL AUTO_INCREMENT,
-    `titulo` Date NOT NULL,
+    `titulo` VARCHAR(250) NOT NULL,
     `status` VARCHAR(15) NOT NULL,
     `editora` BIGINT(20) NOT NULL,
     `autor` BIGINT(20) NOT NULL,

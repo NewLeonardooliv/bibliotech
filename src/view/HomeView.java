@@ -4,8 +4,10 @@ import javax.swing.*;
 
 import controller.AutoresController;
 import controller.EditoraController;
+import controller.LivrosController;
 import model.Autor.AutoresDAO;
 import model.Editora.EditoraDAO;
+import model.Livros.LivrosDAO;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -16,7 +18,7 @@ public class HomeView extends JFrame {
     private JPanel cardPanel;
 
     public HomeView() {
-        setTitle("Sistema de Gerenciamento");
+        setTitle("Bibliotech");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(800, 400);
         setLocationRelativeTo(null);
@@ -26,10 +28,9 @@ public class HomeView extends JFrame {
 
         JPanel homePanel = new JPanel(new BorderLayout());
 
-        JLabel welcomeLabel = new JLabel("Bem-vindo ao Sistema de Gerenciamento");
+        JLabel welcomeLabel = new JLabel("Bem-vindo ao Bibliotech");
         welcomeLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-        // Crie botões personalizados
         JButton editoraButton = createCustomButton("Editoras");
         JButton autoresButton = createCustomButton("Autores");
         JButton livrosButton = createCustomButton("Livros");
@@ -64,9 +65,9 @@ public class HomeView extends JFrame {
                 } else if (buttonText.equals("Autores")) {
                     new AutoresView(new AutoresController(new AutoresDAO()));
                 } else if (buttonText.equals("Livros")) {
-                    // Substitua com a lógica para abrir a tela de Livros
+                    new LivrosView(new LivrosController(new LivrosDAO()));
                 } else if (buttonText.equals("Amigo")) {
-                    // Substitua com a lógica para abrir a tela de Livros
+                    //
                 }
             }
         });

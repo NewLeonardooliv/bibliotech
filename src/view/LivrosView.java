@@ -1,34 +1,35 @@
 package view;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
+import javax.swing.table.*;
 
+import controller.AutoresController;
 import controller.EditoraController;
+import controller.LivrosController;
+import model.Autor.AutoresDAO;
 import model.Editora.EditoraBean;
+import model.Editora.EditoraDAO;
+import model.Livros.LivrosBean;
 import shared.ValidateException;
 import view.components.Button;
+import model.Autor.AutoresBean;
+import java.util.List;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 import java.sql.SQLException;
 
-public class EditorasView extends JFrame {
-    private EditoraController controller;
+public class LivrosView extends JFrame {
+    private LivrosController controller;
     private JTable editoraTable;
     private JFrame frame;
     private DefaultTableModel tableModel;
     private JTextField searchField;
 
-    public EditorasView(EditoraController controller) {
+    public LivrosView(LivrosController controller) {
         this.controller = controller;
 
-        setTitle("Editoras");
+        setTitle("Livros");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(600, 400);
         setLayout(new BorderLayout());
@@ -38,7 +39,7 @@ public class EditorasView extends JFrame {
         int frameY = (screenSize.height - getHeight()) / 2;
         setLocation(frameX, frameY);
 
-        String[] columnNames = { "ID", "Razão Social", "Status" };
+        String[] columnNames = { "ID", "Titulo", "Autor", "Editora", "Status" };
         tableModel = new DefaultTableModel(columnNames, 0);
         editoraTable = new JTable(tableModel);
 
@@ -102,12 +103,14 @@ public class EditorasView extends JFrame {
         tableModel.setRowCount(0);
 
         try {
-            for (EditoraBean editora : controller.listarEditoras()) {
+            for (LivrosBean editora : controller.listar()) {
                 String status = editora.getStatus() ? "Ativo" : "Inativo";
-                tableModel.addRow(new Object[] { editora.getId(), editora.getRazaoSocial(), status });
+                tableModel.addRow(new Object[] { editora.getId(), editora.getTitulo(), editora.getAutorId(),
+                        editora.getEditoraId(), status });
             }
         } catch (SQLException | ValidateException ex) {
-            ex.printStackTrace();
+            JOptionPane.showMessageDialog(frame, "Erro ao editar a editora: " + ex.getMessage(), "Erro",
+                    JOptionPane.ERROR_MESSAGE);
         }
 
         editoraTable.setRowHeight(25);
@@ -153,34 +156,69 @@ public class EditorasView extends JFrame {
         int selectedRow = editoraTable.getSelectedRow();
         if (selectedRow != -1) {
             int id = (int) editoraTable.getValueAt(selectedRow, 0);
-            String razaoSocial = (String) editoraTable.getValueAt(selectedRow, 1);
+            String nome = (String) editoraTable.getValueAt(selectedRow, 1);
 
             JDialog editDialog = new JDialog(frame, "Editar Editora", true);
             editDialog.setLayout(new FlowLayout());
 
-            JTextField razaoSocialEditField = new JTextField(razaoSocial, 20);
+            JTextField nomeEditField = new JTextField(nome, 20);
+            JComboBox<AutoresBean> autorComboBox = new JComboBox<AutoresBean>();
+            JComboBox<EditoraBean> editoraComboBox = new JComboBox<EditoraBean>();
+
+            try {
+                List<AutoresBean> autores = new AutoresController(new AutoresDAO()).listar();
+                for (AutoresBean autor : autores) {
+                    if (autor.getStatus()) {
+                        autorComboBox.addItem(autor);
+                    }
+                }
+
+                List<EditoraBean> editores = new EditoraController(new EditoraDAO()).listarEditoras();
+                for (EditoraBean autor : editores) {
+                    if (autor.getStatus()) {
+                        editoraComboBox.addItem(autor);
+                    }
+                }
+            } catch (SQLException | ValidateException ex) {
+                JOptionPane.showMessageDialog(frame, "Erro ao editar a editora: " + ex.getMessage(), "Erro",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+
             JButton saveButton = new Button().setBackgroundColor(Button.GREEN).get("Salvar");
 
             saveButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    String updatedRazaoSocial = razaoSocialEditField.getText();
+                    String updatedTitulo = nomeEditField.getText();
+                    AutoresBean autorSelecionado = (AutoresBean) autorComboBox.getSelectedItem();
+                    EditoraBean editoraSelecionada = (EditoraBean) editoraComboBox.getSelectedItem();
+
                     try {
-                        controller.editarEditora(id, updatedRazaoSocial);
+                        int autorId = autorSelecionado.getId();
+                        int editoraId = editoraSelecionada.getId();
+
+                        controller.editar(id, updatedTitulo, autorId, editoraId);
                         refreshTable();
                         editDialog.dispose();
                     } catch (SQLException | ValidateException ex) {
-                        JOptionPane.showMessageDialog(frame, "Erro ao editar a editora: " + ex.getMessage(), "Erro",
+                        JOptionPane.showMessageDialog(frame, "Erro ao editar a editora: " + id, "Erro",
                                 JOptionPane.ERROR_MESSAGE);
                     }
                 }
             });
 
-            editDialog.add(new JLabel("Razão Social:"));
-            editDialog.add(razaoSocialEditField);
+            editDialog.add(new JLabel("Nome:"));
+            editDialog.add(nomeEditField);
+
+            // Adicione os JComboBox à janela de edição
+            editDialog.add(new JLabel("Autor:"));
+            editDialog.add(autorComboBox);
+            editDialog.add(new JLabel("Editora:"));
+            editDialog.add(editoraComboBox);
+
             editDialog.add(saveButton);
 
-            editDialog.setSize(300, 150);
+            editDialog.setSize(300, 200);
 
             Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
             int x = (int) ((dimension.getWidth() - editDialog.getWidth()) / 2);
@@ -196,7 +234,7 @@ public class EditorasView extends JFrame {
         if (selectedRow != -1) {
             int id = (int) editoraTable.getValueAt(selectedRow, 0);
             try {
-                controller.apagarEditora(id);
+                controller.inativar(id);
                 refreshTable();
             } catch (SQLException ex) {
             }
@@ -208,8 +246,8 @@ public class EditorasView extends JFrame {
 
         tableModel.setRowCount(0);
         try {
-            for (EditoraBean editora : controller.pesquisarEditoras(searchTerm)) {
-                tableModel.addRow(new Object[] { editora.getId(), editora.getRazaoSocial(),
+            for (LivrosBean editora : controller.pesquisar(searchTerm)) {
+                tableModel.addRow(new Object[] { editora.getId(), editora.getTitulo(),
                         editora.getStatus() ? "Ativo" : "Inativo" });
             }
         } catch (SQLException | ValidateException ex) {
@@ -221,15 +259,43 @@ public class EditorasView extends JFrame {
         JDialog createDialog = new JDialog(frame, "Criar Editora", true);
         createDialog.setLayout(new FlowLayout());
 
-        JTextField razaoSocialEditField = new JTextField(20);
+        JTextField tituloEditField = new JTextField(20);
+        JComboBox<AutoresBean> autorComboBox = new JComboBox<AutoresBean>();
+        JComboBox<EditoraBean> editoraComboBox = new JComboBox<EditoraBean>();
+
+        try {
+            List<AutoresBean> autores = new AutoresController(new AutoresDAO()).listar();
+            for (AutoresBean autor : autores) {
+                if (autor.getStatus()) {
+                    autorComboBox.addItem(autor);
+                }
+            }
+
+            List<EditoraBean> editores = new EditoraController(new EditoraDAO()).listarEditoras();
+            for (EditoraBean autor : editores) {
+                if (autor.getStatus()) {
+                    editoraComboBox.addItem(autor);
+                }
+            }
+        } catch (SQLException | ValidateException ex) {
+            JOptionPane.showMessageDialog(frame, "Erro ao editar a editora: " + ex.getMessage(), "Erro",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+
         JButton saveButton = new Button().setBackgroundColor(Button.GREEN).get("Salvar");
 
         saveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String razaoSocial = razaoSocialEditField.getText();
+                String titulo = tituloEditField.getText();
+                AutoresBean autorSelecionado = (AutoresBean) autorComboBox.getSelectedItem();
+                EditoraBean editoraSelecionada = (EditoraBean) editoraComboBox.getSelectedItem();
+
                 try {
-                    controller.adicionarEditora(razaoSocial);
+                    int autorId = autorSelecionado.getId();
+                    int editoraId = editoraSelecionada.getId();
+
+                    controller.adicionar(titulo, autorId, editoraId);
                     refreshTable();
                     createDialog.dispose();
                 } catch (SQLException | ValidateException ex) {
@@ -239,11 +305,17 @@ public class EditorasView extends JFrame {
             }
         });
 
-        createDialog.add(new JLabel("Razão Social:"));
-        createDialog.add(razaoSocialEditField);
+        createDialog.add(new JLabel("Nome:"));
+        createDialog.add(tituloEditField);
+
+        createDialog.add(new JLabel("Autor:"));
+        createDialog.add(autorComboBox);
+        createDialog.add(new JLabel("Editora:"));
+        createDialog.add(editoraComboBox);
+
         createDialog.add(saveButton);
 
-        createDialog.setSize(300, 150);
+        createDialog.setSize(300, 200);
 
         Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
         int x = (int) ((dimension.getWidth() - createDialog.getWidth()) / 2);

@@ -28,7 +28,7 @@ public class AutoresView extends JFrame {
     public AutoresView(AutoresController controller) {
         this.controller = controller;
 
-        setTitle("Editoras");
+        setTitle("Autores");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(600, 400);
         setLayout(new BorderLayout());

@@ -22,7 +22,7 @@ public class EditoraDAO {
         String sql = "INSERT INTO editoras (razao_social, status) VALUES (?, ?)";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, editora.getRazaoSocial());
-            ps.setBoolean(2, editora.isStatus());
+            ps.setBoolean(2, editora.getStatus());
             ps.executeUpdate();
         }
     }
@@ -68,7 +68,7 @@ public class EditoraDAO {
         String sql = "UPDATE editoras SET razao_social = ?, status = ? WHERE id = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, editora.getRazaoSocial());
-            ps.setBoolean(2, editora.isStatus());
+            ps.setBoolean(2, editora.getStatus());
             ps.setInt(3, editora.getId());
             ps.executeUpdate();
         }

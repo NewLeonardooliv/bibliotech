@@ -32,7 +32,7 @@ public class EditoraBean implements Serializable {
         this.razaoSocial = razaoSocial;
     }
 
-    public boolean isStatus() {
+    public boolean getStatus() {
         return status;
     }
 
