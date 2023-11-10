@@ -38,7 +38,7 @@ public class AutoresView extends JFrame {
         int frameY = (screenSize.height - getHeight()) / 2;
         setLocation(frameX, frameY);
 
-        String[] columnNames = { "ID", "Nome", "Documento", "Status" };
+        String[] columnNames = { "Código", "Nome", "Documento", "Status" };
         tableModel = new DefaultTableModel(columnNames, 0);
         editoraTable = new JTable(tableModel);
 
@@ -50,7 +50,7 @@ public class AutoresView extends JFrame {
         JButton editButton = new Button().setBackgroundColor(Button.BLUE).get("Editar");
         editButton.addActionListener(e -> editAction(e));
 
-        JButton deleteButton = new Button().setBackgroundColor(Button.RED).get("Inativar");
+        JButton deleteButton = new Button().setBackgroundColor(Button.RED).get("Excluir");
         deleteButton.addActionListener(e -> deleteAction(e));
 
         JButton backButton = new Button().setBackgroundColor(Button.CYAN).get("Voltar");
@@ -103,7 +103,7 @@ public class AutoresView extends JFrame {
 
         try {
             for (AutoresBean editora : controller.listar()) {
-                String status = editora.getStatus() ? "Ativo" : "Inativo";
+                String status = editora.getStatus() ? "Ativo" : "Excluído";
                 tableModel.addRow(new Object[] { editora.getId(), editora.getNome(), editora.getDocumento(), status });
             }
         } catch (SQLException | ValidateException ex) {
@@ -129,7 +129,7 @@ public class AutoresView extends JFrame {
                     return this;
 
                 }
-                if (value != null && value.equals("Inativo")) {
+                if (value != null && value.equals("Excluído")) {
                     setForeground(Color.RED);
                     return this;
 
@@ -216,7 +216,7 @@ public class AutoresView extends JFrame {
         try {
             for (AutoresBean editora : controller.pesquisar(searchTerm)) {
                 tableModel.addRow(new Object[] { editora.getId(), editora.getNome(),
-                        editora.getStatus() ? "Ativo" : "Inativo" });
+                        editora.getStatus() ? "Ativo" : "Excluído" });
             }
         } catch (SQLException | ValidateException ex) {
             ex.printStackTrace();

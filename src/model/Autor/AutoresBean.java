@@ -49,4 +49,9 @@ public class AutoresBean implements Serializable {
     public void setStatus(boolean status) {
         this.status = status;
     }
+
+    @Override
+    public String toString() {
+        return nome;
+    }
 }

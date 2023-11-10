@@ -31,7 +31,7 @@ public class LivrosDAO {
 
     public List<LivrosBean> listar() throws SQLException, ValidateException {
         List<LivrosBean> autores = new ArrayList<>();
-        String sql = "SELECT id, titulo, editora, autor, status FROM livros";
+        String sql = "SELECT id, titulo, editora, autor, status FROM livros WHERE status = 1";
         try (PreparedStatement ps = connection.prepareStatement(sql);
                 ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
@@ -48,19 +48,20 @@ public class LivrosDAO {
         return autores;
     }
 
-    public List<LivrosBean> pesquisar(String searchTerm) throws SQLException, ValidateException {
+    public List<LivrosBean> pesquisar(String searchTerm, boolean showInactives) throws SQLException, ValidateException {
         List<LivrosBean> autores = new ArrayList<>();
-        String sql = "SELECT id, titulo, autor, editora, status FROM livros WHERE titulo LIKE ? OR id = ?";
+        String sql = "SELECT id, titulo, autor, editora, status FROM livros WHERE (titulo LIKE ? OR id = ?) AND status = ?";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, "%" + searchTerm + "%");
             ps.setString(2, searchTerm);
+            ps.setBoolean(3, !showInactives);
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
                 LivrosBean autore = new LivrosBean();
                 autore.setId(rs.getInt("id"));
-                autore.setTitulo(rs.getString("razao_social"));
+                autore.setTitulo(rs.getString("titulo"));
                 autore.setAutorId(rs.getInt("autor"));
                 autore.setEditoraId(rs.getInt("editora"));
                 autore.setStatus(rs.getBoolean("status"));
@@ -71,14 +72,14 @@ public class LivrosDAO {
         return autores;
     }
 
-    public void atualizar(LivrosBean autore) throws SQLException {
-        String sql = "UPDATE autores SET titulo = ?, editora = ?, autor = ?, status = ? WHERE id = ?";
+    public void atualizar(LivrosBean livro) throws SQLException {
+        String sql = "UPDATE livros SET titulo = ?, editora = ?, autor = ?, status = ? WHERE id = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, autore.getTitulo());
-            ps.setInt(2, autore.getEditoraId());
-            ps.setInt(3, autore.getAutorId());
-            ps.setBoolean(3, autore.getStatus());
-            ps.setInt(4, autore.getId());
+            ps.setString(1, livro.getTitulo());
+            ps.setInt(2, livro.getEditoraId());
+            ps.setInt(3, livro.getAutorId());
+            ps.setBoolean(4, livro.getStatus());
+            ps.setInt(5, livro.getId());
 
             ps.executeUpdate();
         }

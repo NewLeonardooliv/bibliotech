@@ -24,6 +24,7 @@ public class EditorasView extends JFrame {
     private JFrame frame;
     private DefaultTableModel tableModel;
     private JTextField searchField;
+    private JCheckBox showInactiveCheckBox;
 
     public EditorasView(EditoraController controller) {
         this.controller = controller;
@@ -38,7 +39,7 @@ public class EditorasView extends JFrame {
         int frameY = (screenSize.height - getHeight()) / 2;
         setLocation(frameX, frameY);
 
-        String[] columnNames = { "ID", "Razão Social", "Status" };
+        String[] columnNames = { "Código", "Razão Social", "Status" };
         tableModel = new DefaultTableModel(columnNames, 0);
         editoraTable = new JTable(tableModel);
 
@@ -50,7 +51,7 @@ public class EditorasView extends JFrame {
         JButton editButton = new Button().setBackgroundColor(Button.BLUE).get("Editar");
         editButton.addActionListener(e -> editAction(e));
 
-        JButton deleteButton = new Button().setBackgroundColor(Button.RED).get("Inativar");
+        JButton deleteButton = new Button().setBackgroundColor(Button.RED).get("Excluir");
         deleteButton.addActionListener(e -> deleteAction(e));
 
         JButton backButton = new Button().setBackgroundColor(Button.CYAN).get("Voltar");
@@ -67,6 +68,9 @@ public class EditorasView extends JFrame {
                 }
             }
         });
+
+        showInactiveCheckBox = new JCheckBox("Mostrar Excluídos");
+        showInactiveCheckBox.addActionListener(e -> searchAction());
 
         JPanel buttonActions = new JPanel();
         buttonActions.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -91,6 +95,7 @@ public class EditorasView extends JFrame {
         searchPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         searchPanel.add(new JLabel("Pesquisar:"));
         searchPanel.add(searchField);
+        searchPanel.add(showInactiveCheckBox);
 
         add(searchPanel, BorderLayout.NORTH);
 
@@ -103,7 +108,7 @@ public class EditorasView extends JFrame {
 
         try {
             for (EditoraBean editora : controller.listarEditoras()) {
-                String status = editora.getStatus() ? "Ativo" : "Inativo";
+                String status = editora.getStatus() ? "Ativo" : "Excluído";
                 tableModel.addRow(new Object[] { editora.getId(), editora.getRazaoSocial(), status });
             }
         } catch (SQLException | ValidateException ex) {
@@ -129,7 +134,7 @@ public class EditorasView extends JFrame {
                     return this;
 
                 }
-                if (value != null && value.equals("Inativo")) {
+                if (value != null && value.equals("Excluído")) {
                     setForeground(Color.RED);
                     return this;
 
@@ -205,12 +210,13 @@ public class EditorasView extends JFrame {
 
     private void searchAction() {
         String searchTerm = searchField.getText().trim();
+        boolean showInactive = showInactiveCheckBox.isSelected();
 
         tableModel.setRowCount(0);
         try {
-            for (EditoraBean editora : controller.pesquisarEditoras(searchTerm)) {
+            for (EditoraBean editora : controller.pesquisarEditoras(searchTerm, showInactive)) {
                 tableModel.addRow(new Object[] { editora.getId(), editora.getRazaoSocial(),
-                        editora.getStatus() ? "Ativo" : "Inativo" });
+                        editora.getStatus() ? "Ativo" : "Excluído" });
             }
         } catch (SQLException | ValidateException ex) {
             ex.printStackTrace();

@@ -42,6 +42,6 @@ public class EditoraBean implements Serializable {
 
     @Override
     public String toString() {
-        return "EditoraBean [id=" + id + ", razaoSocial=" + razaoSocial + ", status=" + status + "]";
+        return razaoSocial;
     }
 }

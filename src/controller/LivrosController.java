@@ -43,7 +43,7 @@ public class LivrosController {
         return autoresDao.listar();
     }
 
-    public List<LivrosBean> pesquisar(String searchTerm) throws SQLException, ValidateException {
-        return autoresDao.pesquisar(searchTerm);
+    public List<LivrosBean> pesquisar(String searchTerm, boolean showInactives) throws SQLException, ValidateException {
+        return autoresDao.pesquisar(searchTerm, showInactives);
     }
 }

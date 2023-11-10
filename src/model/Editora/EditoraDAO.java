@@ -29,7 +29,7 @@ public class EditoraDAO {
 
     public List<EditoraBean> listarEditoras() throws SQLException, ValidateException {
         List<EditoraBean> editoras = new ArrayList<>();
-        String sql = "SELECT id, razao_social, status FROM editoras";
+        String sql = "SELECT id, razao_social, status FROM editoras WHERE status = 1";
         try (PreparedStatement ps = connection.prepareStatement(sql);
                 ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
@@ -43,13 +43,15 @@ public class EditoraDAO {
         return editoras;
     }
 
-    public List<EditoraBean> pesquisarEditoras(String searchTerm) throws SQLException, ValidateException {
+    public List<EditoraBean> pesquisarEditoras(String searchTerm, boolean showInactives)
+            throws SQLException, ValidateException {
         List<EditoraBean> editoras = new ArrayList<>();
-        String sql = "SELECT id, razao_social, status FROM editoras WHERE razao_social LIKE ? OR id = ?";
+        String sql = "SELECT id, razao_social, status FROM editoras WHERE (razao_social LIKE ? OR id = ?) AND status = ?";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, "%" + searchTerm + "%");
             ps.setString(2, searchTerm);
+            ps.setBoolean(3, !showInactives);
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -89,5 +91,25 @@ public class EditoraDAO {
             ps.setInt(2, editoraId);
             ps.executeUpdate();
         }
+    }
+
+    public EditoraBean obter(int editoraId) throws SQLException, ValidateException {
+        EditoraBean editora = new EditoraBean();
+        String sql = "SELECT id, razao_social, status FROM editoras WHERE id = ? LIMIT 1";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, editoraId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    editora = new EditoraBean();
+                    editora.setId(rs.getInt("id"));
+                    editora.setRazaoSocial(rs.getString("razao_social"));
+                    editora.setStatus(rs.getBoolean("status"));
+                }
+            }
+        }
+
+        return editora;
     }
 }

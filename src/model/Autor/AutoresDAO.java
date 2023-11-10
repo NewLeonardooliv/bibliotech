@@ -30,12 +30,12 @@ public class AutoresDAO {
 
     public List<AutoresBean> listar() throws SQLException, ValidateException {
         List<AutoresBean> autores = new ArrayList<>();
-        String sql = "SELECT id, nome, documento, status FROM autores";
+        String sql = "SELECT ID, nome, documento, status FROM autores";
         try (PreparedStatement ps = connection.prepareStatement(sql);
                 ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 AutoresBean autor = new AutoresBean();
-                autor.setId(rs.getInt("id"));
+                autor.setId(rs.getInt("ID"));
                 autor.setNome(rs.getString("nome"));
                 autor.setDocumento(rs.getString("documento"));
                 autor.setStatus(rs.getBoolean("status"));
@@ -95,5 +95,25 @@ public class AutoresDAO {
             ps.setInt(2, autoreId);
             ps.executeUpdate();
         }
+    }
+
+    public AutoresBean obter(int autorId) throws SQLException, ValidateException {
+        AutoresBean autor = new AutoresBean();
+        String sql = "SELECT id, nome, status FROM autores WHERE id = ? LIMIT 1";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, autorId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    autor = new AutoresBean();
+                    autor.setId(rs.getInt("id"));
+                    autor.setNome(rs.getString("nome"));
+                    autor.setStatus(rs.getBoolean("status"));
+                }
+            }
+        }
+
+        return autor;
     }
 }

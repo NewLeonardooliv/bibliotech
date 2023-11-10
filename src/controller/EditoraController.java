@@ -37,8 +37,9 @@ public class EditoraController {
         return editoras.listarEditoras();
     }
 
-        public List<EditoraBean> pesquisarEditoras(String searchTerm) throws SQLException, ValidateException {
-        return editoras.pesquisarEditoras(searchTerm);
+    public List<EditoraBean> pesquisarEditoras(String searchTerm, boolean showInactives)
+            throws SQLException, ValidateException {
+        return editoras.pesquisarEditoras(searchTerm, showInactives);
     }
 
     public void editarEditora(int id, String razaoSocial) throws SQLException, ValidateException {
