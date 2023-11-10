@@ -31,7 +31,7 @@ public class AutoresView extends JFrame {
 
         setTitle("Autores");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(600, 400);
+        setSize(1000, 700);
         setLayout(new BorderLayout());
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -252,42 +252,53 @@ public class AutoresView extends JFrame {
     }
 
     private void createAction() {
-        JDialog createDialog = new JDialog(frame, "Criar Editora", true);
-        createDialog.setLayout(new FlowLayout());
+        JDialog createDialog = new JDialog(frame, "Criar Autor", true);
+        createDialog.setLayout(new BorderLayout());
+
+        JPanel inputPanel = new JPanel(new GridLayout(2, 2, 5, 5));
 
         JTextField nomeEditField = new JTextField(20);
         JTextField documentoEditField = new JTextField(20);
-        JButton saveButton = new Button().setBackgroundColor(Button.GREEN).get("Salvar");
+
+        inputPanel.add(new JLabel("Nome:"));
+        inputPanel.add(nomeEditField);
+        inputPanel.add(new JLabel("Documento:"));
+        inputPanel.add(documentoEditField);
+        JPanel buttonPanel = new JPanel();
+
+        JButton saveButton = new Button()
+                .setBackgroundColor(Button.GREEN)
+                .get("Salvar");
 
         saveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String nome = nomeEditField.getText();
                 String documento = documentoEditField.getText();
+
                 try {
                     controller.adicionar(nome, documento);
                     refreshTable();
                     createDialog.dispose();
                 } catch (SQLException | ValidateException ex) {
-                    JOptionPane.showMessageDialog(frame, "Erro ao criar a editora: " + ex.getMessage(), "Erro",
+                    JOptionPane.showMessageDialog(frame, "Erro ao criar autor: " + ex.getMessage(), "Erro",
                             JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
 
-        createDialog.add(new JLabel("Nome:"));
-        createDialog.add(nomeEditField);
-        createDialog.add(new JLabel("Documento:"));
-        createDialog.add(documentoEditField);
-        createDialog.add(saveButton);
+        buttonPanel.add(saveButton);
+
+        createDialog.add(inputPanel, BorderLayout.CENTER);
+        createDialog.add(buttonPanel, BorderLayout.SOUTH);
 
         createDialog.setSize(300, 150);
-
         Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
         int x = (int) ((dimension.getWidth() - createDialog.getWidth()) / 2);
         int y = (int) ((dimension.getHeight() - createDialog.getHeight()) / 2);
         createDialog.setLocation(x, y);
 
+        // Torna o diálogo visível
         createDialog.setVisible(true);
     }
 }

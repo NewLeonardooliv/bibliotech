@@ -20,7 +20,7 @@ public class HomeView extends JFrame {
     public HomeView() {
         setTitle("Bibliotech");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(800, 400);
+        setSize(1000, 700);
         setLocationRelativeTo(null);
 
         cardLayout = new CardLayout();

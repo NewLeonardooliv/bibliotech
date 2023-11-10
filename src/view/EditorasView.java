@@ -30,7 +30,7 @@ public class EditorasView extends JFrame {
 
         setTitle("Editoras");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(600, 400);
+        setSize(1000, 700);
         setLayout(new BorderLayout());
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -157,7 +157,7 @@ public class EditorasView extends JFrame {
             try {
                 EditoraBean editora = controller.buscar(id);
                 if (!editora.getStatus()) {
-                    JOptionPane.showMessageDialog(frame, "A editora selecionada foi excluído e não pode ser editado.",
+                    JOptionPane.showMessageDialog(frame, "A editora selecionada foi excluída e não pode ser editado.",
                             "Erro", JOptionPane.ERROR_MESSAGE);
                     return;
                 }

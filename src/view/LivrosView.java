@@ -32,7 +32,7 @@ public class LivrosView extends JFrame {
 
         setTitle("Livros");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(600, 400);
+        setSize(1000, 700);
         setLayout(new BorderLayout());
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -280,7 +280,7 @@ public class LivrosView extends JFrame {
     }
 
     private void createAction() {
-        JDialog createDialog = new JDialog(frame, "Criar Editora", true);
+        JDialog createDialog = new JDialog(frame, "Criar Livro", true);
         createDialog.setLayout(new GridLayout(4, 2, 5, 5));
 
         JTextField tituloEditField = new JTextField(20);
@@ -302,7 +302,7 @@ public class LivrosView extends JFrame {
                 }
             }
         } catch (SQLException | ValidateException ex) {
-            JOptionPane.showMessageDialog(frame, "Erro ao criar a editora: " + ex.getMessage(), "Erro",
+            JOptionPane.showMessageDialog(frame, "Erro ao criar livro: " + ex.getMessage(), "Erro",
                     JOptionPane.ERROR_MESSAGE);
         }
 
@@ -322,7 +322,7 @@ public class LivrosView extends JFrame {
                     refreshTable();
                     createDialog.dispose();
                 } catch (SQLException | ValidateException ex) {
-                    JOptionPane.showMessageDialog(frame, "Erro ao criar a editora: " + ex.getMessage(), "Erro",
+                    JOptionPane.showMessageDialog(frame, "Erro ao criar livro: " + ex.getMessage(), "Erro",
                             JOptionPane.ERROR_MESSAGE);
                 }
             }
