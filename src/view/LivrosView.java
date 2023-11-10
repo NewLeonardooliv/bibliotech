@@ -246,9 +246,11 @@ public class LivrosView extends JFrame {
 
             if (confirmDialogResult == JOptionPane.YES_OPTION) {
                 try {
-                    controller.inativar(id);
+                    LivrosBean livro = controller.obter(id);
+
+                    controller.inativar(id, !livro.getStatus());
                     refreshTable();
-                } catch (SQLException ex) {
+                } catch (SQLException | ValidateException ex) {
                     JOptionPane.showMessageDialog(frame, "Erro ao excluir/recuperar: " + ex.getMessage(), "Erro",
                             JOptionPane.ERROR_MESSAGE);
                 }

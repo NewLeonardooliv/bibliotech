@@ -35,8 +35,8 @@ public class LivrosController {
         livrosDao.atualizar(autoresBean);
     }
 
-    public void inativar(int id) throws SQLException {
-        livrosDao.inativar(id);
+    public void inativar(int id, boolean status) throws SQLException {
+        livrosDao.inativar(id, status);
     }
 
     public List<LivrosBean> listar() throws SQLException, ValidateException {
