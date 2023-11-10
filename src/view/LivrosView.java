@@ -178,10 +178,15 @@ public class LivrosView extends JFrame {
             JComboBox<EditoraBean> editoraComboBox = new JComboBox<>();
 
             try {
+                LivrosBean livro = controller.obter(id);
+
                 List<AutoresBean> autores = new AutoresController(new AutoresDAO()).listar();
                 for (AutoresBean autor : autores) {
                     if (autor.getStatus()) {
                         autorComboBox.addItem(autor);
+                    }
+                    if (livro.getAutorId() == autor.getId()) {
+                        autorComboBox.setSelectedItem(autor);
                     }
                 }
 
@@ -189,6 +194,9 @@ public class LivrosView extends JFrame {
                 for (EditoraBean editora : editores) {
                     if (editora.getStatus()) {
                         editoraComboBox.addItem(editora);
+                    }
+                    if (livro.getEditoraId() == editora.getId()) {
+                        editoraComboBox.setSelectedItem(editora);
                     }
                 }
             } catch (SQLException | ValidateException ex) {

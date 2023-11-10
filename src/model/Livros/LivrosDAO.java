@@ -101,4 +101,26 @@ public class LivrosDAO {
             ps.executeUpdate();
         }
     }
+
+    public LivrosBean obter(int autorId) throws SQLException, ValidateException {
+        LivrosBean livro = new LivrosBean();
+        String sql = "SELECT id, titulo, autor, editora, status FROM livros WHERE id = ? LIMIT 1";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, autorId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    livro = new LivrosBean();
+                    livro.setId(rs.getInt("id"));
+                    livro.setTitulo(rs.getString("titulo"));
+                    livro.setEditoraId(rs.getInt("editora"));
+                    livro.setAutorId(rs.getInt("autor"));
+                    livro.setStatus(rs.getBoolean("status"));
+                }
+            }
+        }
+
+        return livro;
+    }
 }

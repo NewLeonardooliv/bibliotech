@@ -8,10 +8,10 @@ import model.Livros.LivrosDAO;
 import shared.ValidateException;
 
 public class LivrosController {
-    private LivrosDAO autoresDao;
+    private LivrosDAO livrosDao;
 
-    public LivrosController(LivrosDAO autoresDAO) {
-        this.autoresDao = autoresDAO;
+    public LivrosController(LivrosDAO livrosDao) {
+        this.livrosDao = livrosDao;
     }
 
     public void adicionar(String titulo, int autorId, int editoraId) throws SQLException, ValidateException {
@@ -21,7 +21,7 @@ public class LivrosController {
         autoresBean.setEditoraId(editoraId);
         autoresBean.setStatus(true);
 
-        autoresDao.adicionar(autoresBean);
+        livrosDao.adicionar(autoresBean);
     }
 
     public void editar(int livroId, String titulo, int autorId, int editoraId) throws SQLException, ValidateException {
@@ -32,18 +32,22 @@ public class LivrosController {
         autoresBean.setEditoraId(editoraId);
         autoresBean.setStatus(true);
 
-        autoresDao.atualizar(autoresBean);
+        livrosDao.atualizar(autoresBean);
     }
 
     public void inativar(int id) throws SQLException {
-        autoresDao.inativar(id);
+        livrosDao.inativar(id);
     }
 
     public List<LivrosBean> listar() throws SQLException, ValidateException {
-        return autoresDao.listar();
+        return livrosDao.listar();
     }
 
     public List<LivrosBean> pesquisar(String searchTerm, boolean showInactives) throws SQLException, ValidateException {
-        return autoresDao.pesquisar(searchTerm, showInactives);
+        return livrosDao.pesquisar(searchTerm, showInactives);
+    }
+
+    public LivrosBean obter(int livroId) throws SQLException, ValidateException {
+        return livrosDao.obter(livroId);
     }
 }

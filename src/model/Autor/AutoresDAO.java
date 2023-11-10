@@ -12,7 +12,6 @@ import shared.ValidateException;
 
 public class AutoresDAO {
     private Connection connection;
-    public String razaoSocial;
 
     public AutoresDAO() {
         this.connection = Database.connect();

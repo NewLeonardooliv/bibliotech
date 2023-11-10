@@ -48,7 +48,7 @@ public class LivrosBean implements Serializable {
     }
 
     public LivrosBean setAutorId(int autorId) {
-        this.editoraId = autorId;
+        this.autorId = autorId;
 
         return this;
     }

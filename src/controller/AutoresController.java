@@ -41,7 +41,13 @@ public class AutoresController {
         return autoresDao.listar();
     }
 
-    public List<AutoresBean> pesquisar(String searchTerm, boolean showInactives) throws SQLException, ValidateException {
+    public List<AutoresBean> pesquisar(String searchTerm, boolean showInactives)
+            throws SQLException, ValidateException {
         return autoresDao.pesquisar(searchTerm, showInactives);
+    }
+
+    public AutoresBean obter(int idAutor)
+            throws SQLException, ValidateException {
+        return autoresDao.obter(idAutor);
     }
 }
