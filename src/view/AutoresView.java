@@ -24,6 +24,7 @@ public class AutoresView extends JFrame {
     private JFrame frame;
     private DefaultTableModel tableModel;
     private JTextField searchField;
+    private JCheckBox showInactiveCheckBox;
 
     public AutoresView(AutoresController controller) {
         this.controller = controller;
@@ -38,7 +39,7 @@ public class AutoresView extends JFrame {
         int frameY = (screenSize.height - getHeight()) / 2;
         setLocation(frameX, frameY);
 
-        String[] columnNames = { "Código", "Nome", "Documento", "Status" };
+        String[] columnNames = { "Código", "Nome", "Documento" };
         tableModel = new DefaultTableModel(columnNames, 0);
         editoraTable = new JTable(tableModel);
 
@@ -68,6 +69,9 @@ public class AutoresView extends JFrame {
             }
         });
 
+        showInactiveCheckBox = new JCheckBox("Mostrar Excluídos");
+        showInactiveCheckBox.addActionListener(e -> searchAction());
+
         JPanel buttonActions = new JPanel();
         buttonActions.setLayout(new FlowLayout(FlowLayout.LEFT));
         buttonActions.add(addButton);
@@ -91,6 +95,7 @@ public class AutoresView extends JFrame {
         searchPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         searchPanel.add(new JLabel("Pesquisar:"));
         searchPanel.add(searchField);
+        searchPanel.add(showInactiveCheckBox);
 
         add(searchPanel, BorderLayout.NORTH);
 
@@ -103,8 +108,7 @@ public class AutoresView extends JFrame {
 
         try {
             for (AutoresBean editora : controller.listar()) {
-                String status = editora.getStatus() ? "Ativo" : "Excluído";
-                tableModel.addRow(new Object[] { editora.getId(), editora.getNome(), editora.getDocumento(), status });
+                tableModel.addRow(new Object[] { editora.getId(), editora.getNome(), editora.getDocumento() });
             }
         } catch (SQLException | ValidateException ex) {
             ex.printStackTrace();
@@ -211,12 +215,12 @@ public class AutoresView extends JFrame {
 
     private void searchAction() {
         String searchTerm = searchField.getText().trim();
+        boolean showInactive = showInactiveCheckBox.isSelected();
 
         tableModel.setRowCount(0);
         try {
-            for (AutoresBean editora : controller.pesquisar(searchTerm)) {
-                tableModel.addRow(new Object[] { editora.getId(), editora.getNome(),
-                        editora.getStatus() ? "Ativo" : "Excluído" });
+            for (AutoresBean editora : controller.pesquisar(searchTerm, showInactive)) {
+                tableModel.addRow(new Object[] { editora.getId(), editora.getNome(), editora.getDocumento() });
             }
         } catch (SQLException | ValidateException ex) {
             ex.printStackTrace();

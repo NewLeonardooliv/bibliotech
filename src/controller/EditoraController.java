@@ -37,6 +37,10 @@ public class EditoraController {
         return editoras.listarEditoras();
     }
 
+    public EditoraBean buscar(int editoraId) throws SQLException, ValidateException {
+        return editoras.obter(editoraId);
+    }
+
     public List<EditoraBean> pesquisarEditoras(String searchTerm, boolean showInactives)
             throws SQLException, ValidateException {
         return editoras.pesquisarEditoras(searchTerm, showInactives);

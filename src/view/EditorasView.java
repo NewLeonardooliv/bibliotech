@@ -1,7 +1,6 @@
 package view;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
@@ -39,7 +38,7 @@ public class EditorasView extends JFrame {
         int frameY = (screenSize.height - getHeight()) / 2;
         setLocation(frameX, frameY);
 
-        String[] columnNames = { "Código", "Razão Social", "Status" };
+        String[] columnNames = { "Código", "Razão Social" };
         tableModel = new DefaultTableModel(columnNames, 0);
         editoraTable = new JTable(tableModel);
 
@@ -108,8 +107,7 @@ public class EditorasView extends JFrame {
 
         try {
             for (EditoraBean editora : controller.listarEditoras()) {
-                String status = editora.getStatus() ? "Ativo" : "Excluído";
-                tableModel.addRow(new Object[] { editora.getId(), editora.getRazaoSocial(), status });
+                tableModel.addRow(new Object[] { editora.getId(), editora.getRazaoSocial() });
             }
         } catch (SQLException | ValidateException ex) {
             ex.printStackTrace();
@@ -122,31 +120,6 @@ public class EditorasView extends JFrame {
         header.setBackground(Color.DARK_GRAY);
         header.setForeground(Color.WHITE);
         header.setFont(new Font("Arial", Font.BOLD, 14));
-
-        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() {
-            @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-                    boolean hasFocus, int row, int column) {
-                super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-
-                if (value != null && value.equals("Ativo")) {
-                    setForeground(Color.GREEN);
-                    return this;
-
-                }
-                if (value != null && value.equals("Excluído")) {
-                    setForeground(Color.RED);
-                    return this;
-
-                }
-
-                setForeground(Color.BLACK);
-
-                return this;
-            }
-        };
-
-        editoraTable.getColumnModel().getColumn(2).setCellRenderer(renderer);
     }
 
     private void backAction() {
@@ -215,8 +188,7 @@ public class EditorasView extends JFrame {
         tableModel.setRowCount(0);
         try {
             for (EditoraBean editora : controller.pesquisarEditoras(searchTerm, showInactive)) {
-                tableModel.addRow(new Object[] { editora.getId(), editora.getRazaoSocial(),
-                        editora.getStatus() ? "Ativo" : "Excluído" });
+                tableModel.addRow(new Object[] { editora.getId(), editora.getRazaoSocial() });
             }
         } catch (SQLException | ValidateException ex) {
             ex.printStackTrace();

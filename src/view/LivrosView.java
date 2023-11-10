@@ -40,7 +40,7 @@ public class LivrosView extends JFrame {
         int frameY = (screenSize.height - getHeight()) / 2;
         setLocation(frameX, frameY);
 
-        String[] columnNames = { "Código", "Titulo", "Autor", "Editora", "Status" };
+        String[] columnNames = { "Código", "Titulo", "Autor", "Editora" };
         tableModel = new DefaultTableModel(columnNames, 0);
         editoraTable = new JTable(tableModel);
 
@@ -112,13 +112,12 @@ public class LivrosView extends JFrame {
 
         try {
             for (LivrosBean livros : controller.listar()) {
-                String status = livros.getStatus() ? "Ativo" : "Excluído";
 
                 EditoraBean editora = editoraDAO.obter(livros.getEditoraId());
                 AutoresBean autor = autoresDAO.obter(livros.getAutorId());
 
                 tableModel.addRow(new Object[] { livros.getId(), livros.getTitulo(), autor.getNome(),
-                        editora.getRazaoSocial(), status });
+                        editora.getRazaoSocial() });
             }
         } catch (SQLException | ValidateException ex) {
             JOptionPane.showMessageDialog(frame, "Erro ao atualizar a lista de editoras: " + ex.getMessage(), "Erro",
@@ -262,13 +261,12 @@ public class LivrosView extends JFrame {
 
         try {
             for (LivrosBean livros : controller.pesquisar(searchTerm, showInactive)) {
-                String status = livros.getStatus() ? "Ativo" : "Excluído";
 
                 EditoraBean editora = editoraDAO.obter(livros.getEditoraId());
                 AutoresBean autor = autoresDAO.obter(livros.getAutorId());
 
                 tableModel.addRow(new Object[] { livros.getId(), livros.getTitulo(), autor.getNome(),
-                        editora.getRazaoSocial(), status });
+                        editora.getRazaoSocial() });
             }
         } catch (SQLException | ValidateException ex) {
             ex.printStackTrace();

@@ -30,7 +30,7 @@ public class AutoresDAO {
 
     public List<AutoresBean> listar() throws SQLException, ValidateException {
         List<AutoresBean> autores = new ArrayList<>();
-        String sql = "SELECT ID, nome, documento, status FROM autores";
+        String sql = "SELECT ID, nome, documento, status FROM autores WHERE status = 1";
         try (PreparedStatement ps = connection.prepareStatement(sql);
                 ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
@@ -46,19 +46,20 @@ public class AutoresDAO {
         return autores;
     }
 
-    public List<AutoresBean> pesquisar(String searchTerm) throws SQLException, ValidateException {
+    public List<AutoresBean> pesquisar(String searchTerm, boolean showInactives) throws SQLException, ValidateException {
         List<AutoresBean> autores = new ArrayList<>();
-        String sql = "SELECT id, nome, documento, status FROM autores WHERE razao_social LIKE ? OR id = ?";
+        String sql = "SELECT id, nome, documento, status FROM autores WHERE (nome LIKE ? OR id = ?) AND status = ?";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, "%" + searchTerm + "%");
             ps.setString(2, searchTerm);
+            ps.setBoolean(3, !showInactives);
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
                 AutoresBean autore = new AutoresBean();
                 autore.setId(rs.getInt("id"));
-                autore.setNome(rs.getString("razao_social"));
+                autore.setNome(rs.getString("nome"));
                 autore.setDocumento(rs.getString("documento"));
                 autore.setStatus(rs.getBoolean("status"));
                 autores.add(autore);
