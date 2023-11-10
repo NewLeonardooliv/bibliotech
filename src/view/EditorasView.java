@@ -154,6 +154,20 @@ public class EditorasView extends JFrame {
                 }
             });
 
+            try {
+                EditoraBean editora = controller.buscar(id);
+                if (!editora.getStatus()) {
+                    JOptionPane.showMessageDialog(frame, "A editora selecionada foi excluído e não pode ser editado.",
+                            "Erro", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            } catch (SQLException | ValidateException ex) {
+                JOptionPane.showMessageDialog(frame, "Erro ao verificar o status da editora: " + ex.getMessage(),
+                        "Erro",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
             editDialog.add(new JLabel("Razão Social:"));
             editDialog.add(razaoSocialEditField);
             editDialog.add(saveButton);
@@ -181,9 +195,10 @@ public class EditorasView extends JFrame {
 
             if (confirmDialogResult == JOptionPane.YES_OPTION) {
                 try {
-                    controller.inativar(id);
+                    EditoraBean editora = controller.buscar(id);
+                    controller.inativarAtivar(id, !editora.getStatus());
                     refreshTable();
-                } catch (SQLException ex) {
+                } catch (SQLException | ValidateException ex) {
                     JOptionPane.showMessageDialog(frame, "Erro ao excluir/recuperar: " + ex.getMessage(), "Erro",
                             JOptionPane.ERROR_MESSAGE);
                 }

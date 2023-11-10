@@ -84,10 +84,10 @@ public class EditoraDAO {
         }
     }
 
-    public void inativarEditora(int editoraId) throws SQLException {
+    public void inativarAtivar(int editoraId, boolean status) throws SQLException {
         String sql = "UPDATE editoras SET status = ? WHERE id = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setBoolean(1, false);
+            ps.setBoolean(1, status);
             ps.setInt(2, editoraId);
             ps.executeUpdate();
         }

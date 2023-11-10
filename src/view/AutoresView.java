@@ -161,7 +161,7 @@ public class AutoresView extends JFrame {
             String documento = (String) editoraTable.getValueAt(selectedRow, 2);
 
             JDialog editDialog = new JDialog(frame, "Editar Editora", true);
-            editDialog.setLayout(new FlowLayout());
+            editDialog.setLayout(new GridLayout(3, 2, 5, 5));
 
             JTextField nomeEditField = new JTextField(nome, 20);
             JTextField documentoEditField = new JTextField(documento, 20);
@@ -184,10 +184,24 @@ public class AutoresView extends JFrame {
                 }
             });
 
+            try {
+                AutoresBean autor = controller.obter(id);
+                if (!autor.getStatus()) {
+                    JOptionPane.showMessageDialog(frame, "O autor selecionado foi excluído e não pode ser editado.",
+                            "Erro", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            } catch (SQLException | ValidateException ex) {
+                JOptionPane.showMessageDialog(frame, "Erro ao verificar o status do autor: " + ex.getMessage(), "Erro",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
             editDialog.add(new JLabel("Nome:"));
             editDialog.add(nomeEditField);
             editDialog.add(new JLabel("Documento:"));
             editDialog.add(documentoEditField);
+            editDialog.add(new JLabel(""));
             editDialog.add(saveButton);
 
             editDialog.setSize(300, 150);

@@ -131,31 +131,6 @@ public class LivrosView extends JFrame {
         header.setBackground(Color.DARK_GRAY);
         header.setForeground(Color.WHITE);
         header.setFont(new Font("Arial", Font.BOLD, 14));
-
-        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() {
-            @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-                    boolean hasFocus, int row, int column) {
-                super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-
-                if (value != null && value.equals("Ativo")) {
-                    setForeground(Color.GREEN);
-                    return this;
-
-                }
-                if (value != null && value.equals("Excluído")) {
-                    setForeground(Color.RED);
-                    return this;
-
-                }
-
-                setForeground(Color.BLACK);
-
-                return this;
-            }
-        };
-
-        editoraTable.getColumnModel().getColumn(2).setCellRenderer(renderer);
     }
 
     private void backAction() {
@@ -225,6 +200,19 @@ public class LivrosView extends JFrame {
                     }
                 }
             });
+            try {
+                LivrosBean livro = controller.obter(id);
+                if (!livro.getStatus()) {
+                    JOptionPane.showMessageDialog(frame, "O livro selecionado foi excluído e não pode ser editado.",
+                            "Erro", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            } catch (SQLException | ValidateException ex) {
+                JOptionPane.showMessageDialog(frame, "Erro ao verificar o status do livro: " + ex.getMessage(),
+                        "Erro",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
             editDialog.add(new JLabel("Nome:"));
             editDialog.add(nomeEditField);

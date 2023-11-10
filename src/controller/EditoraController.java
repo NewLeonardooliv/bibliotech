@@ -29,8 +29,8 @@ public class EditoraController {
         editoras.atualizarEditora(editoraBean);
     }
 
-    public void inativar(int id) throws SQLException {
-        editoras.inativarEditora(id);
+    public void inativarAtivar(int id, boolean status) throws SQLException {
+        editoras.inativarAtivar(id, status);
     }
 
     public List<EditoraBean> listarEditoras() throws SQLException, ValidateException {
