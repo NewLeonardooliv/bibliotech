@@ -13,6 +13,7 @@ public class Button {
     public static final Color YELLOW = new Color(255, 227, 71);
     public static final Color GREEN = new Color(0, 237, 59);
     public static final Color CYAN = new Color(0, 237, 226);
+    public static final Color ORANGE = new Color(255, 158, 0);
 
     public JButton get(String buttonName) {
         JButton button = new JButton();

@@ -52,7 +52,7 @@ public class LivrosView extends JFrame {
         JButton editButton = new Button().setBackgroundColor(Button.BLUE).get("Editar");
         editButton.addActionListener(e -> editAction(e));
 
-        JButton deleteButton = new Button().setBackgroundColor(Button.RED).get("Excluir");
+        JButton deleteButton = new Button().setBackgroundColor(Button.ORANGE).get("Excluir/Recuperar");
         deleteButton.addActionListener(e -> deleteAction(e));
 
         JButton backButton = new Button().setBackgroundColor(Button.CYAN).get("Voltar");
@@ -250,10 +250,20 @@ public class LivrosView extends JFrame {
         int selectedRow = editoraTable.getSelectedRow();
         if (selectedRow != -1) {
             int id = (int) editoraTable.getValueAt(selectedRow, 0);
-            try {
-                controller.inativar(id);
-                refreshTable();
-            } catch (SQLException ex) {
+            int confirmDialogResult = JOptionPane.showConfirmDialog(
+                    frame,
+                    "Tem certeza de que deseja excluir/recuperar?",
+                    "Confirmação",
+                    JOptionPane.YES_NO_OPTION);
+
+            if (confirmDialogResult == JOptionPane.YES_OPTION) {
+                try {
+                    controller.inativar(id);
+                    refreshTable();
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(frame, "Erro ao excluir/recuperar: " + ex.getMessage(), "Erro",
+                            JOptionPane.ERROR_MESSAGE);
+                }
             }
         }
     }

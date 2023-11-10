@@ -29,7 +29,7 @@ public class EditoraController {
         editoras.atualizarEditora(editoraBean);
     }
 
-    public void apagarEditora(int id) throws SQLException {
+    public void inativar(int id) throws SQLException {
         editoras.inativarEditora(id);
     }
 
