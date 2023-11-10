@@ -33,8 +33,8 @@ public class AutoresController {
         autoresDao.atualizar(autoresBean);
     }
 
-    public void inativar(int id) throws SQLException {
-        autoresDao.inativar(id);
+    public void inativar(int id, boolean status) throws SQLException {
+        autoresDao.inativar(id, status);
     }
 
     public List<AutoresBean> listar() throws SQLException, ValidateException {

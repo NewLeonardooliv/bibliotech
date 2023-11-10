@@ -45,7 +45,8 @@ public class AutoresDAO {
         return autores;
     }
 
-    public List<AutoresBean> pesquisar(String searchTerm, boolean showInactives) throws SQLException, ValidateException {
+    public List<AutoresBean> pesquisar(String searchTerm, boolean showInactives)
+            throws SQLException, ValidateException {
         List<AutoresBean> autores = new ArrayList<>();
         String sql = "SELECT id, nome, documento, status FROM autores WHERE (nome LIKE ? OR id = ?) AND status = ?";
 
@@ -88,10 +89,10 @@ public class AutoresDAO {
         }
     }
 
-    public void inativar(int autoreId) throws SQLException {
+    public void inativar(int autoreId, boolean status) throws SQLException {
         String sql = "UPDATE autores SET status = ? WHERE id = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setBoolean(1, false);
+            ps.setBoolean(1, status);
             ps.setInt(2, autoreId);
             ps.executeUpdate();
         }

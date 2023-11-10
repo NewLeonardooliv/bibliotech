@@ -227,9 +227,10 @@ public class AutoresView extends JFrame {
 
             if (confirmDialogResult == JOptionPane.YES_OPTION) {
                 try {
-                    controller.inativar(id);
+                    AutoresBean autor = controller.obter(id);
+                    controller.inativar(id, !autor.getStatus());
                     refreshTable();
-                } catch (SQLException ex) {
+                } catch (SQLException | ValidateException ex) {
                     JOptionPane.showMessageDialog(frame, "Erro ao excluir/recuperar: " + ex.getMessage(), "Erro",
                             JOptionPane.ERROR_MESSAGE);
                 }
